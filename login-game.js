@@ -178,7 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkInput() {
-        console.log(`Phase: ${phase}`);
         if (phase === 'password') {
             checkPassword();
         } else if (phase === 'confirm') {
@@ -205,12 +204,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     submitButton.addEventListener('click', () => {
-        console.log('Submit button clicked');
         checkInput();
     });
 
     clearButton.addEventListener('click', () => {
-        console.log('Clear button clicked');
         resetGame();
         outputDiv.innerHTML = '';
     });
