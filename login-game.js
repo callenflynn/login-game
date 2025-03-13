@@ -3,11 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordInput = document.getElementById('passwordInput');
     const clearButton = document.getElementById('clearButton');
     const submitButton = document.getElementById('submitButton');
-    const triesLeftDiv = document.createElement('div');
-    triesLeftDiv.id = 'triesLeft';
-    document.body.appendChild(triesLeftDiv);
-
-    let triesLeft = 10;
 
     const moonPhases = [
         { emoji: '🌑', name: 'new moon' },
@@ -19,37 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
         { emoji: '🌗', name: 'last quarter moon' },
         { emoji: '🌘', name: 'waning crescent moon' }
     ];
+    const randomMoonPhase = moonPhases[Math.floor(Math.random() * moonPhases.length)];
 
-    function getRandomMoonPhase() {
-        return moonPhases[Math.floor(Math.random() * moonPhases.length)];
-    }
+    const romanNumeralRequirement = { regex: /^(?=.*[IVX]).*$/, message: `all Roman numerals (I, V, X) must add up to ${Math.floor(Math.random() * 41) + 30}` };
 
-    function getPasswordRequirements() {
-        const randomMoonPhase = getRandomMoonPhase();
-        const romanNumeralRequirement = { regex: /^(?=.*[IVX]).*$/, message: `all Roman numerals (I, V, X) must add up to ${Math.floor(Math.random() * 41) + 30}` };
+    const passwordRequirements = [
+        { regex: /[A-Z]/, message: 'must have at least one capital letter' },
+        { regex: /[a-z]/, message: 'must have at least one lowercase letter' },
+        { regex: /[0-9]/, message: 'must have at least one number' },
+        { regex: /[\W_]/, message: 'must have at least one special character' },
+        { regex: /😀|😁|😂|🤣|😃|😄|😅|😆|😉|😊|😋|😎|😍|😘|😗|😙|😚|🙂|🤗|🤩|🤔|🤨|😐|😑|😶|🙄|😏|😣|😥|😮|🤐|😯|😪|😫|😴|😌|😛|😜|😝|🤤|😒|😓|😔|😕|🙃|🤑|😲|☹️|🙁|😖|😞|😟|😤|😢|😭|😦|😧|😨|😩|🤯|😬|😰|😱|😳|🤪|😵|😡|😠|🤬|😷|🤒|🤕|🤢|🤮|🤧|😇|🥳|🥺|🤠/, message: 'must have at least one emoji (some examples are 😱, 😁, or 🤠)' },
+        { regex: /[\u00C0-\u017F]/, message: 'must have at least one character from a different language' },
+        { regex: /(?:McDonald\'s|Burger King|Wendy\'s|Taco Bell|Subway|KFC|Pizza Hut|Starbucks)/i, message: 'must have at least one fast food brand name' },
+        { regex: /(?:Big Mac|Whopper|Frosty|Crunchwrap|Subway Club|Zinger|Pepperoni Pizza|Frappuccino|Chicken McNuggets|Double Cheeseburger|Baconator|Doritos Locos Taco|Meatball Marinara|Original Recipe Chicken|Stuffed Crust Pizza|Caramel Macchiato)/i, message: 'must have at least one specific menu item from a fast food brand' },
+        { regex: new RegExp(randomMoonPhase.emoji), message: `must include the ${randomMoonPhase.name} emoji (${randomMoonPhase.emoji})` },
+        { regex: /(?:cat|dog|elephant|lion|tiger|bear|wolf|fox|rabbit|deer|giraffe|zebra|hippopotamus|rhinoceros|kangaroo|koala|panda|leopard|cheetah|jaguar|hyena|buffalo|bison|antelope|gazelle|moose|elk|reindeer|caribou|camel|llama|alpaca|donkey|mule|horse|pony|goat|sheep|ram|ewe|lamb|pig|hog|boar|sow|piglet|cow|bull|ox|calf|chicken|rooster|hen|chick|duck|drake|duckling|goose|gander|gosling|turkey|peacock|peahen|peafowl|swan|cygnet|parrot|macaw|cockatoo|budgerigar|canary|finch|sparrow|robin|bluebird|cardinal|oriole|hummingbird|woodpecker|kingfisher|owl|eagle|hawk|falcon|vulture|condor|penguin|albatross|seagull|pelican|cormorant|heron|stork|flamingo|crane|ibis|spoonbill|ostrich|emu|cassowary|kiwi|dodo|pigeon|dove|bat|whale|dolphin|porpoise|shark|ray|skate|eel|lamprey|hagfish|salmon|trout|bass|perch|pike|carp|catfish|goldfish|guppy|tetra|betta|angelfish|clownfish|seahorse|starfish|jellyfish|octopus|squid|cuttlefish|nautilus|crab|lobster|shrimp|prawn|krill|barnacle|clam|oyster|mussel|scallop|snail|slug|worm|earthworm|leech|centipede|millipede|spider|tarantula|scorpion|tick|mite|ant|bee|wasp|hornet|fly|mosquito|butterfly|moth|beetle|ladybug|grasshopper|cricket|locust|katydid|mantis|cockroach|termite|dragonfly|damselfly|mayfly|stonefly|caddisfly|lacewing|antlion|dobsonfly)/i, message: 'must have at least one animal name' },
+        { regex: /(?:apple|banana|cherry|date|fig|grape|kiwi|lemon|mango|orange)/i, message: 'must have at least one fruit name' },
+         { regex: /(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_])(?=.*[\u{1F600}-\u{1F64F}])(?=.*[\u00C0-\u017F])(?=.*(?:McDonald\'s|Burger King|Wendy\'s|Taco Bell|Subway|KFC|Pizza Hut|Starbucks))(?=.*(?:Big Mac|Whopper|Frosty|Crunchwrap|Subway Club|Zinger|Pepperoni Pizza|Frappuccino|Chicken McNuggets|Double Cheeseburger|Baconator|Doritos Locos Taco|Meatball Marinara|Original Recipe Chicken|Stuffed Crust Pizza|Caramel Macchiato))(?=.*(?:red|blue|green|yellow|purple|orange|pink|brown|black|white|gray))(?=.*(?:cat|dog|elephant|lion|tiger|bear|wolf|fox|rabbit|deer|giraffe|zebra|hippopotamus|rhinoceros|kangaroo|koala|panda|leopard|cheetah|jaguar|hyena|buffalo|bison|antelope|gazelle|moose|elk|reindeer|caribou|camel|llama|alpaca|donkey|mule|horse|pony|goat|sheep|ram|ewe|lamb|pig|hog|boar|sow|piglet|cow|bull|ox|calf|chicken|rooster|hen|chick|duck|drake|duckling|goose|gander|gosling|turkey|peacock|peahen|peafowl|swan|cygnet|parrot|macaw|cockatoo|budgerigar|canary|finch|sparrow|robin|bluebird|cardinal|oriole|hummingbird|woodpecker|kingfisher|owl|eagle|hawk|falcon|vulture|condor|penguin|albatross|seagull|pelican|cormorant|heron|stork|flamingo|crane|ibis|spoonbill|ostrich|emu|cassowary|kiwi|dodo|pigeon|dove|bat|whale|dolphin|porpoise|shark|ray|skate|eel|lamprey|hagfish|salmon|trout|bass|perch|pike|carp|catfish|goldfish|guppy|tetra|betta|angelfish|clownfish|seahorse|starfish|jellyfish|octopus|squid|cuttlefish|nautilus|crab|lobster|shrimp|prawn|krill|barnacle|clam|oyster|mussel|scallop|snail|slug|worm|earthworm|leech|centipede|millipede|spider|tarantula|scorpion|tick|mite|ant|bee|wasp|hornet|fly|mosquito|butterfly|moth|beetle|ladybug|grasshopper|cricket|locust|katydid|mantis|cockroach|termite|dragonfly|damselfly|mayfly|stonefly|caddisfly|lacewing|antlion|dobsonfly))(?=.*(?:apple|banana|cherry|date|fig|grape|kiwi|lemon|mango|orange))/, message: 'must meet all previous requirements' }
+    ];
 
-        const requirements = [
-            { regex: /[A-Z]/, message: 'must have at least one capital letter' },
-            { regex: /[a-z]/, message: 'must have at least one lowercase letter' },
-            { regex: /[0-9]/, message: 'must have at least one number' },
-            { regex: /[\W_]/, message: 'must have at least one special character' },
-            { regex: /😀|😁|😂|🤣|😃|😄|😅|😆|😉|😊|😋|😎|😍|😘|😗|😙|😚|🙂|🤗|🤩|🤔|🤨|😐|😑|😶|🙄|😏|😣|😥|😮|🤐|😯|😪|😫|😴|😌|😛|😜|😝|🤤|😒|😓|😔|😕|🙃|🤑|😲|☹️|🙁|😖|😞|😟|😤|😢|😭|😦|😧|😨|😩|🤯|😬|😰|😱|😳|🤪|😵|😡|😠|🤬|😷|🤒|🤕|🤢|🤮|🤧|😇|🥳|🥺|🤠/, message: 'must have at least one emoji (some examples are 😱, 😁, or 🤠)' },
-            { regex: /[\u00C0-\u017F]/, message: 'must have at least one character from a different language' },
-            { regex: /(?:McDonald\'s|Burger King|Wendy\'s|Taco Bell|Subway|KFC|Pizza Hut|Starbucks)/i, message: 'must have at least one fast food brand name' },
-            { regex: /(?:Big Mac|Whopper|Frosty|Crunchwrap|Subway Club|Zinger|Pepperoni Pizza|Frappuccino|Chicken McNuggets|Double Cheeseburger|Baconator|Doritos Locos Taco|Meatball Marinara|Original Recipe Chicken|Stuffed Crust Pizza|Caramel Macchiato)/i, message: 'must have at least one specific menu item from a fast food brand' },
-            { regex: new RegExp(randomMoonPhase.emoji), message: `must include the ${randomMoonPhase.name} emoji (${randomMoonPhase.emoji})` },
-            { regex: /(?:red|blue|green|yellow|purple|orange|pink|brown|black|white|gray)/i, message: 'must have at least one color name' },
-            { regex: /(?:cat|dog|elephant|lion|tiger|bear|wolf|fox|rabbit|deer|giraffe|zebra|hippopotamus|rhinoceros|kangaroo|koala|panda|leopard|cheetah|jaguar|hyena|buffalo|bison|antelope|gazelle|moose|elk|reindeer|caribou|camel|llama|alpaca|donkey|mule|horse|pony|goat|sheep|ram|ewe|lamb|pig|hog|boar|sow|piglet|cow|bull|ox|calf|chicken|rooster|hen|chick|duck|drake|duckling|goose|gander|gosling|turkey|peacock|peahen|peafowl|swan|cygnet|parrot|macaw|cockatoo|budgerigar|canary|finch|sparrow|robin|bluebird|cardinal|oriole|hummingbird|woodpecker|kingfisher|owl|eagle|hawk|falcon|vulture|condor|penguin|albatross|seagull|pelican|cormorant|heron|stork|flamingo|crane|ibis|spoonbill|ostrich|emu|cassowary|kiwi|dodo|pigeon|dove|bat|whale|dolphin|porpoise|shark|ray|skate|eel|lamprey|hagfish|salmon|trout|bass|perch|pike|carp|catfish|goldfish|guppy|tetra|betta|angelfish|clownfish|seahorse|starfish|jellyfish|octopus|squid|cuttlefish|nautilus|crab|lobster|shrimp|prawn|krill|barnacle|clam|oyster|mussel|scallop|snail|slug|worm|earthworm|leech|centipede|millipede|spider|tarantula|scorpion|tick|mite|ant|bee|wasp|hornet|fly|mosquito|butterfly|moth|beetle|ladybug|grasshopper|cricket|locust|katydid|mantis|cockroach|termite|dragonfly|damselfly|mayfly|stonefly|caddisfly|lacewing|antlion|dobsonfly)/i, message: 'must have at least one animal name' },
-            { regex: /(?:apple|banana|cherry|date|fig|grape|kiwi|lemon|mango|orange)/i, message: 'must have at least one fruit name' },
-            { regex: /(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[\W_])(?=.*[\u{1F600}-\u{1F64F}])(?=.*[\u00C0-\u017F])(?=.*(?:McDonald\'s|Burger King|Wendy\'s|Taco Bell|Subway|KFC|Pizza Hut|Starbucks))(?=.*(?:Big Mac|Whopper|Frosty|Crunchwrap|Subway Club|Zinger|Pepperoni Pizza|Frappuccino|Chicken McNuggets|Double Cheeseburger|Baconator|Doritos Locos Taco|Meatball Marinara|Original Recipe Chicken|Stuffed Crust Pizza|Caramel Macchiato))(?=.*(?:red|blue|green|yellow|purple|orange|pink|brown|black|white|gray))(?=.*(?:cat|dog|elephant|lion|tiger|bear|wolf|fox|rabbit|deer|giraffe|zebra|hippopotamus|rhinoceros|kangaroo|koala|panda|leopard|cheetah|jaguar|hyena|buffalo|bison|antelope|gazelle|moose|elk|reindeer|caribou|camel|llama|alpaca|donkey|mule|horse|pony|goat|sheep|ram|ewe|lamb|pig|hog|boar|sow|piglet|cow|bull|ox|calf|chicken|rooster|hen|chick|duck|drake|duckling|goose|gander|gosling|turkey|peacock|peahen|peafowl|swan|cygnet|parrot|macaw|cockatoo|budgerigar|canary|finch|sparrow|robin|bluebird|cardinal|oriole|hummingbird|woodpecker|kingfisher|owl|eagle|hawk|falcon|vulture|condor|penguin|albatross|seagull|pelican|cormorant|heron|stork|flamingo|crane|ibis|spoonbill|ostrich|emu|cassowary|kiwi|dodo|pigeon|dove|bat|whale|dolphin|porpoise|shark|ray|skate|eel|lamprey|hagfish|salmon|trout|bass|perch|pike|carp|catfish|goldfish|guppy|tetra|betta|angelfish|clownfish|seahorse|starfish|jellyfish|octopus|squid|cuttlefish|nautilus|crab|lobster|shrimp|prawn|krill|barnacle|clam|oyster|mussel|scallop|snail|slug|worm|earthworm|leech|centipede|millipede|spider|tarantula|scorpion|tick|mite|ant|bee|wasp|hornet|fly|mosquito|butterfly|moth|beetle|ladybug|grasshopper|cricket|locust|katydid|mantis|cockroach|termite|dragonfly|damselfly|mayfly|stonefly|caddisfly|lacewing|antlion|dobsonfly))(?=.*(?:apple|banana|cherry|date|fig|grape|kiwi|lemon|mango|orange))/, message: 'must meet all previous requirements' }
-        ];
-
-        requirements.sort(() => Math.random() - 0.5);
-        requirements.push(romanNumeralRequirement);
-        return requirements;
-    }
-
-    let passwordRequirements = getPasswordRequirements();
+    // Shuffle the requirements array, but keep the Roman numeral requirement towards the end
+    passwordRequirements.sort(() => Math.random() - 0.5);
+    passwordRequirements.push(romanNumeralRequirement);
 
     const usernameRequirements = [
         { regex: /^.{10,50}$/, message: 'must be between 10 and 50 characters long' },
@@ -78,45 +64,22 @@ document.addEventListener('DOMContentLoaded', () => {
         return sum;
     }
 
-    function updateTriesLeft() {
-        triesLeftDiv.innerHTML = `Tries left: ${triesLeft}`;
-    }
-
     function checkPassword() {
         const password = passwordInput.value;
-        let allRequirementsMet = true;
-        let missedRequirement = '';
+        const currentRequirement = passwordRequirements[currentRequirementIndex];
 
-        for (let i = 0; i <= currentRequirementIndex; i++) {
-            const requirement = passwordRequirements[i];
-            if (i === passwordRequirements.length - 1) {
-                const romanSum = romanToInt(password.match(/[IVX]/g)?.join('') || '');
-                const targetSum = parseInt(requirement.message.match(/\d+/)[0]);
-                if (romanSum !== targetSum) {
-                    allRequirementsMet = false;
-                    missedRequirement = requirement.message;
-                    break;
-                }
-            } else if (!requirement.regex.test(password)) {
-                allRequirementsMet = false;
-                missedRequirement = requirement.message;
-                break;
+        if (currentRequirementIndex === passwordRequirements.length - 1) {
+            const romanSum = romanToInt(password.match(/[IVX]/g)?.join('') || '');
+            const targetSum = parseInt(currentRequirement.message.match(/\d+/)[0]);
+            if (romanSum === targetSum) {
+                currentRequirementIndex++;
             }
-        }
-
-        if (allRequirementsMet) {
+        } else if (currentRequirement.regex.test(password)) {
             currentRequirementIndex++;
         }
 
         if (currentRequirementIndex < passwordRequirements.length) {
-            outputDiv.innerHTML = `<p class="incorrect">Password is incorrect, it ${missedRequirement}.</p>`;
-            triesLeft--;
-            updateTriesLeft();
-            if (triesLeft === 0) {
-                resetGame();
-                passwordRequirements = getPasswordRequirements();
-                outputDiv.innerHTML = `<p class="incorrect">Too many incorrect attempts! Requirements have been re-randomized. Please start over.</p>`;
-            }
+            outputDiv.innerHTML = `<p class="incorrect">Password is incorrect, it ${passwordRequirements[currentRequirementIndex].message}.</p>`;
         } else {
             phase = 'confirm';
             originalPassword = password;
@@ -133,31 +96,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkUsername() {
         const username = passwordInput.value;
-        let allRequirementsMet = true;
-        let missedRequirement = '';
+        const currentRequirement = usernameRequirements[currentRequirementIndex];
 
-        for (let i = 0; i <= currentRequirementIndex; i++) {
-            const requirement = usernameRequirements[i];
-            if (!requirement.regex.test(username)) {
-                allRequirementsMet = false;
-                missedRequirement = requirement.message;
-                break;
-            }
-        }
-
-        if (allRequirementsMet) {
+        if (currentRequirement.regex.test(username)) {
             currentRequirementIndex++;
         }
 
         if (currentRequirementIndex < usernameRequirements.length) {
-            outputDiv.innerHTML = `<p class="incorrect">Username is incorrect, it ${missedRequirement}.</p>`;
-            triesLeft--;
-            updateTriesLeft();
-            if (triesLeft === 0) {
-                resetGame();
-                passwordRequirements = getPasswordRequirements();
-                outputDiv.innerHTML = `<p class="incorrect">Too many incorrect attempts! Requirements have been re-randomized. Please start over.</p>`;
-            }
+            outputDiv.innerHTML = `<p class="incorrect">Username is incorrect, it ${usernameRequirements[currentRequirementIndex].message}.</p>`;
         } else {
             outputDiv.innerHTML = `<p>Username is valid! You've successfully logged in!</p>`;
         }
@@ -178,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkInput() {
-        console.log(`Phase: ${phase}`);
         if (phase === 'password') {
             checkPassword();
         } else if (phase === 'confirm') {
@@ -194,8 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
         originalPassword = '';
         passwordInput.value = '';
         passwordInput.placeholder = 'Type your password and press Enter';
-        triesLeft = 10;
-        updateTriesLeft();
     }
 
     passwordInput.addEventListener('keypress', (event) => {
@@ -205,15 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     submitButton.addEventListener('click', () => {
-        console.log('Submit button clicked');
         checkInput();
     });
 
     clearButton.addEventListener('click', () => {
-        console.log('Clear button clicked');
         resetGame();
         outputDiv.innerHTML = '';
     });
-
-    updateTriesLeft();
 });
