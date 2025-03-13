@@ -178,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkInput() {
+        console.log(`Phase: ${phase}`);
         if (phase === 'password') {
             checkPassword();
         } else if (phase === 'confirm') {
