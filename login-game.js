@@ -205,10 +205,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     submitButton.addEventListener('click', () => {
+        console.log('Submit button clicked');
         checkInput();
     });
 
     clearButton.addEventListener('click', () => {
+        console.log('Clear button clicked');
         resetGame();
         outputDiv.innerHTML = '';
     });
